@@ -295,7 +295,6 @@ const Karyawan: React.FC = () => {
           const data = await response.json();
           console.log("Response:", data);
           success();
-          reset();
         }
       }
     };
