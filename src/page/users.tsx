@@ -198,9 +198,7 @@ const Users: React.FC = () => {
       console.log(jsonData); // Log the parsed data
 
       for (let i = 0; i < jsonData.length; i++) {
-        const url = `https://internal.gbssecurindo.co.id/users?username=${
-          jsonData[i].username
-        }&password=${jsonData[i].password}&id_karyawan=${1}`;
+        const url = `https://internal.gbssecurindo.co.id/users?username=${jsonData[i].username}&password=${jsonData[i].password}&id_karyawan=${jsonData[i].id_karyawan}`;
         const response = await fetch(url, { method: "POST" });
 
         if (!response.ok) {

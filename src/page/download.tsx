@@ -188,12 +188,11 @@ const Download: React.FC = () => {
 
   const onChangeLokasi = (value: number) => {
     setIdLokasi(value);
-    const nama_lokasi = lokasiList.map((item: any) => {
+    lokasiList.map((item: any) => {
       if (item.id == value) {
-        return item.nama_lokasi;
+        setNamaLokasi(item.nama_lokasi);
       }
     });
-    setNamaLokasi(nama_lokasi?.[0]);
   };
 
   const onChangeDate = async (dates: any, dateStrings: string[]) => {

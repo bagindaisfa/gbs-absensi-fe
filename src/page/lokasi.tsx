@@ -7,11 +7,7 @@ import {
   InputNumber,
   message,
   Modal,
-  Space,
   Table,
-  Tag,
-  TimePicker,
-  Typography,
   Upload,
 } from "antd";
 import * as XLSX from "xlsx";
@@ -38,6 +34,7 @@ const Lokasi: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [lokasiList, setLokasiList] = useState([]);
+  const [lokasiOption, setLokasiOption] = useState([]);
   const [idLokasi, setIdLokasi] = useState(0);
   const [namaLokasi, setNamaLokasi] = useState("");
   const [toleransi, setToleransi] = useState(0);
@@ -50,6 +47,10 @@ const Lokasi: React.FC = () => {
       title: "Lokasi",
       dataIndex: "nama_lokasi",
       key: "nama_lokasi",
+      filters: lokasiOption,
+      filterMode: "tree",
+      filterSearch: true,
+      onFilter: (val: any, record) => record.nama_lokasi.startsWith(val),
     },
     {
       title: "Shift",
@@ -123,7 +124,13 @@ const Lokasi: React.FC = () => {
       const result = await response.json();
       if (result) {
         setLokasiList(result.lokasi);
-        console.log("lokasi :", result);
+        const option = result.lokasi.map((item: any) => {
+          return {
+            text: item.nama_lokasi,
+            value: item.nama_lokasi,
+          };
+        });
+        setLokasiOption(option);
       }
     } catch (error) {
       console.log("Error fetching data:", error);

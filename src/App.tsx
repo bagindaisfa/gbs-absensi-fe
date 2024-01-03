@@ -15,6 +15,7 @@ import Absensi from "./page/absensi";
 import Download from "./page/download";
 import Users from "./page/users";
 import Shift from "./page/shift";
+import DownloadJadwal from "./page/downloadJadwal";
 const { Header, Content, Footer, Sider } = Layout;
 
 interface MenuItem {
@@ -39,7 +40,10 @@ const items: MenuItem[] = [
     getItem("Shift", "4"),
     getItem("Users", "5"),
   ]),
-  getItem("Download", "6", <FileOutlined />),
+  getItem("Download", "sub2", <FileOutlined />, [
+    getItem("Absen", "6"),
+    getItem("Jadwal", "7"),
+  ]),
 ];
 
 const App: React.FC = () => {
@@ -61,12 +65,14 @@ const App: React.FC = () => {
     contentComponent = <Karyawan />;
   } else if (selectedMenu.includes("sub1") && selectedMenu.includes("3")) {
     contentComponent = <Lokasi />;
-  } else if (selectedMenu.includes("4")) {
+  } else if (selectedMenu.includes("sub1") && selectedMenu.includes("4")) {
     contentComponent = <Shift />;
-  } else if (selectedMenu.includes("5")) {
+  } else if (selectedMenu.includes("sub1") && selectedMenu.includes("5")) {
     contentComponent = <Users />;
-  } else if (selectedMenu.includes("6")) {
+  } else if (selectedMenu.includes("sub2") && selectedMenu.includes("6")) {
     contentComponent = <Download />;
+  } else if (selectedMenu.includes("sub2") && selectedMenu.includes("7")) {
+    contentComponent = <DownloadJadwal />;
   }
   const generateBreadcrumb = (selectedMenu: string[]) => {
     const breadcrumbItems: React.ReactNode[] = [];

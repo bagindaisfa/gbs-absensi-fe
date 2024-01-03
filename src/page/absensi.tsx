@@ -38,14 +38,13 @@ const { RangePicker } = DatePicker;
 
 const Absensi: React.FC = () => {
   const currentDate = new Date();
-
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Adding 1 as months are zero-based
   const day = String(currentDate.getDate()).padStart(2, "0");
-
   const formattedDate = `${year}-${month}-${day}`;
   const [startDate, setStartDate] = useState(formattedDate);
   const [endDate, setEndDate] = useState(formattedDate);
+  const [loadingTable, setLoadingTable] = useState(false);
   const absensiURL = "https://internal.gbssecurindo.co.id/absensi";
   const lokasiURL = "https://internal.gbssecurindo.co.id/masterLokasi";
   const [absensiList, setAbsensiList] = useState([]);
@@ -97,11 +96,13 @@ const Absensi: React.FC = () => {
   };
 
   const getAbsensi = async () => {
+    setLoadingTable(true);
     try {
       const response = await fetch(
         absensiURL + "?start_date=" + startDate + "&end_date=" + endDate
       ); // Replace with your API endpoint
       if (!response.ok) {
+        setLoadingTable(false);
         throw new Error("Network response was not ok.");
       }
 
@@ -112,6 +113,7 @@ const Absensi: React.FC = () => {
       getLokasi();
     } catch (error) {
       console.log("Error fetching data:", error);
+      setLoadingTable(false);
     }
   };
 
@@ -119,6 +121,7 @@ const Absensi: React.FC = () => {
     try {
       const response = await fetch(lokasiURL); // Replace with your API endpoint
       if (!response.ok) {
+        setLoadingTable(false);
         throw new Error("Network response was not ok.");
       }
 
@@ -131,9 +134,11 @@ const Absensi: React.FC = () => {
           };
         });
         setLokasiOption(option);
+        setLoadingTable(false);
       }
     } catch (error) {
       console.log("Error fetching data:", error);
+      setLoadingTable(false);
     }
   };
 
@@ -392,6 +397,7 @@ const Absensi: React.FC = () => {
           />
         )}
         scroll={{ x: 1500, y: 450 }}
+        loading={loadingTable}
       />
     </>
   );
