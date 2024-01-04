@@ -6,7 +6,6 @@ import {
   message,
   Modal,
   Select,
-  Space,
   Table,
   Upload,
 } from "antd";

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Button,
-  Card,
   Form,
   Input,
   InputNumber,
@@ -11,9 +10,8 @@ import {
   Upload,
 } from "antd";
 import * as XLSX from "xlsx";
-import { UploadOutlined, PlusOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
-import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
@@ -173,7 +171,6 @@ const Lokasi: React.FC = () => {
           setEdit(false);
           throw new Error("Network response was not ok.");
         } else {
-          const data = await response.json();
           success();
           reset();
         }
@@ -186,7 +183,6 @@ const Lokasi: React.FC = () => {
           setEdit(false);
           throw new Error("Network response was not ok.");
         } else {
-          const data = await response.json();
           success();
           reset();
         }
@@ -259,7 +255,6 @@ const Lokasi: React.FC = () => {
           setEdit(false);
           throw new Error("Network response was not ok.");
         } else {
-          const data = await response.json();
           success();
         }
       }

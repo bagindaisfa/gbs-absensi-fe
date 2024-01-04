@@ -3,10 +3,7 @@ import {
   DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import logo from "./favicon.png";
 import Karyawan from "./page/karyawan";
@@ -47,7 +44,6 @@ const items: MenuItem[] = [
 ];
 
 const App: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<string[]>(["1"]);
   const {
     token: { colorBgContainer, borderRadiusLG },
