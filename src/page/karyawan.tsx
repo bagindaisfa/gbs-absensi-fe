@@ -54,6 +54,7 @@ const Karyawan: React.FC = () => {
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [shiftDeletedData, setShiftDeletedData] = useState<Array<any>>([]);
   const [edit, setEdit] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
   const karyawanURL = "https://internal.gbssecurindo.co.id/karyawanList";
   const karyawanSubmitURL = "https://internal.gbssecurindo.co.id/karyawan";
   const shiftKaryawanURL = "https://internal.gbssecurindo.co.id/shiftkaryawan";
@@ -61,9 +62,11 @@ const Karyawan: React.FC = () => {
   const shiftURL = "https://internal.gbssecurindo.co.id/shiftoption";
 
   const getKaryawan = async () => {
+    setLoadingTable(true);
     try {
       const response = await fetch(karyawanURL); // Replace with your API endpoint
       if (!response.ok) {
+        setLoadingTable(false);
         throw new Error("Network response was not ok.");
       }
 
@@ -73,6 +76,7 @@ const Karyawan: React.FC = () => {
       }
       getLokasi();
     } catch (error) {
+      setLoadingTable(false);
       console.log("Error fetching data:", error);
     }
   };
@@ -116,6 +120,7 @@ const Karyawan: React.FC = () => {
     try {
       const response = await fetch(lokasiURL); // Replace with your API endpoint
       if (!response.ok) {
+        setLoadingTable(false);
         throw new Error("Network response was not ok.");
       }
 
@@ -130,8 +135,10 @@ const Karyawan: React.FC = () => {
         });
         setLokasiOption(option);
         setLoadingEdit(false);
+        setLoadingTable(false);
       }
     } catch (error) {
+      setLoadingTable(false);
       console.log("Error fetching data:", error);
     }
   };
@@ -500,7 +507,11 @@ const Karyawan: React.FC = () => {
             </Button>
           </Upload>
         </div>
-        <Table columns={columns} dataSource={karyawanList} />
+        <Table
+          columns={columns}
+          dataSource={karyawanList}
+          loading={loadingTable}
+        />
       </div>
       <Modal
         title="Tambah Karyawan"

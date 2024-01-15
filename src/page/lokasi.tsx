@@ -39,6 +39,7 @@ const Lokasi: React.FC = () => {
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
   const [edit, setEdit] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
   const lokasiURL = "https://internal.gbssecurindo.co.id/lokasi";
   const columns: ColumnsType<DataType> = [
     {
@@ -113,9 +114,11 @@ const Lokasi: React.FC = () => {
   }, []);
 
   const getLokasi = async () => {
+    setLoadingTable(true);
     try {
       const response = await fetch(lokasiURL); // Replace with your API endpoint
       if (!response.ok) {
+        setLoadingTable(false);
         throw new Error("Network response was not ok.");
       }
 
@@ -129,8 +132,10 @@ const Lokasi: React.FC = () => {
           };
         });
         setLokasiOption(option);
+        setLoadingTable(false);
       }
     } catch (error) {
+      setLoadingTable(false);
       console.log("Error fetching data:", error);
     }
   };
@@ -297,7 +302,11 @@ const Lokasi: React.FC = () => {
             </Button>
           </Upload>
         </div>
-        <Table columns={columns} dataSource={lokasiList} />
+        <Table
+          columns={columns}
+          dataSource={lokasiList}
+          loading={loadingTable}
+        />
       </div>
       <Modal
         title="Tambah Lokasi"

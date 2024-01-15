@@ -36,6 +36,7 @@ const Lokasi: React.FC = () => {
   const [jamMasuk, setJamMasuk] = useState("00:00:00");
   const [jamKeluar, setJamKeluar] = useState("00:00:00");
   const [edit, setEdit] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
   const lokasiURL = "https://internal.gbssecurindo.co.id/masterLokasi";
   const shiftURL = "https://internal.gbssecurindo.co.id/shift";
   const columns: ColumnsType<DataType> = [
@@ -112,17 +113,21 @@ const Lokasi: React.FC = () => {
   };
 
   const getShift = async () => {
+    setLoadingTable(true);
     try {
       const response = await fetch(shiftURL); // Replace with your API endpoint
       if (!response.ok) {
+        setLoadingTable(false);
         throw new Error("Network response was not ok.");
       }
 
       const result = await response.json();
       if (result) {
         setShiftList(result.shift);
+        setLoadingTable(false);
       }
     } catch (error) {
+      setLoadingTable(false);
       console.log("Error fetching data:", error);
     }
   };
@@ -235,7 +240,11 @@ const Lokasi: React.FC = () => {
             Tambah Shift
           </Button>
         </div>
-        <Table columns={columns} dataSource={shiftList} />
+        <Table
+          columns={columns}
+          dataSource={shiftList}
+          loading={loadingTable}
+        />
       </div>
       <Modal
         title="Tambah Shift"

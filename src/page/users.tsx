@@ -33,6 +33,7 @@ const Users: React.FC = () => {
   const [edit, setEdit] = useState(false);
   const [karyawanList, setKaryawanList] = useState([]);
   const [usersList, setUsersList] = useState([]);
+  const [loadingTable, setLoadingTable] = useState(false);
   const karyawanURL = "https://internal.gbssecurindo.co.id/karyawanList";
   const usersURL = "https://internal.gbssecurindo.co.id/users";
 
@@ -101,17 +102,21 @@ const Users: React.FC = () => {
   };
 
   const getUsers = async () => {
+    setLoadingTable(true);
     try {
       const response = await fetch(usersURL); // Replace with your API endpoint
       if (!response.ok) {
+        setLoadingTable(false);
         throw new Error("Network response was not ok.");
       }
 
       const result = await response.json();
       if (result) {
         setUsersList(result.users);
+        setLoadingTable(false);
       }
     } catch (error) {
+      setLoadingTable(false);
       console.log("Error fetching data:", error);
     }
   };
@@ -253,7 +258,11 @@ const Users: React.FC = () => {
             </Button>
           </Upload>
         </div>
-        <Table columns={columns} dataSource={usersList} />
+        <Table
+          columns={columns}
+          dataSource={usersList}
+          loading={loadingTable}
+        />
       </div>
       <Modal
         title="Tambah Pengguna"
