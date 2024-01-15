@@ -29,7 +29,7 @@ interface DataType {
   status: string;
   keterangan: string;
   lat: string;
-  long: string;
+  lng: string;
   alasan: string;
 }
 
@@ -313,11 +313,11 @@ const Absensi: React.FC = () => {
         return (
           record.lat && (
             <a
-              href={`https://maps.google.com/maps?q=@${record.lat},${record.long}`}
+              href={`https://maps.google.com/maps?q=@${record.lat},${record.lng}`}
               style={{ textDecoration: "none" }}
               target="_blank"
             >
-              {record.lat}, {record.long}
+              {record.lat}, {record.lng}
             </a>
           )
         );

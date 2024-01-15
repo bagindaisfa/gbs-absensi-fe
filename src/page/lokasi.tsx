@@ -22,7 +22,7 @@ interface DataType {
   jam_masuk: string;
   jam_keluar: string;
   lat: string;
-  long: string;
+  lng: string;
   toleransi: number;
 }
 
@@ -72,11 +72,11 @@ const Lokasi: React.FC = () => {
         return (
           record.lat && (
             <a
-              href={`https://maps.google.com/maps?q=@${record.lat},${record.long}`}
+              href={`https://maps.google.com/maps?q=@${record.lat},${record.lng}`}
               style={{ textDecoration: "none" }}
               target="_blank"
             >
-              {record.lat}, {record.long}
+              {record.lat}, {record.lng}
             </a>
           )
         );
@@ -98,7 +98,7 @@ const Lokasi: React.FC = () => {
             setNamaLokasi(record.nama_lokasi);
             setToleransi(record.toleransi);
             setLat(record.lat);
-            setLong(record.long);
+            setLong(record.lng);
             showModal();
             setEdit(true);
           }}
