@@ -20,6 +20,7 @@ const DownloadJadwal: React.FC = () => {
   const [month, setMonth] = useState<any>("");
   const [absensiList, setAbsensiList] = useState([]);
   const [lokasiList, setLokasiList] = useState([]);
+  const [loadingDownload, setLoadingDownload] = useState(false);
   const absensiURL = "https://internal.gbssecurindo.co.id/downloadjadwal";
   const lokasiURL = "https://internal.gbssecurindo.co.id/masterlokasi";
   const dateFormat = "YYYY-MM-DD";
@@ -41,11 +42,13 @@ const DownloadJadwal: React.FC = () => {
   };
 
   const getAbsensi = async () => {
+    setLoadingDownload(true);
     try {
       const response = await fetch(
         absensiURL + "?month=" + month + "&id_lokasi=" + idLokasi
       );
       if (!response.ok) {
+        setLoadingDownload(false);
         throw new Error("Network response was not ok.");
       }
 
@@ -60,8 +63,10 @@ const DownloadJadwal: React.FC = () => {
         });
 
         setAbsensiList(data);
+        setLoadingDownload(false);
       }
     } catch (error) {
+      setLoadingDownload(false);
       console.log("Error fetching data:", error);
     }
   };
@@ -205,7 +210,9 @@ const DownloadJadwal: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item>
-          <Button onClick={handleExportClick}>Download</Button>
+          <Button onClick={handleExportClick} loading={loadingDownload}>
+            Download
+          </Button>
         </Form.Item>
       </Form>
     </>
