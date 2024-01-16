@@ -289,9 +289,9 @@ const Karyawan: React.FC = () => {
       console.log(jsonData); // Log the parsed data
 
       for (let i = 0; i < jsonData.length; i++) {
-        const url = `${karyawanSubmitURL}?nama=${
-          jsonData[i].nama
-        }&id_lokasi=${1}&shift=${JSON.stringify([])}`;
+        const url = `${karyawanSubmitURL}?nama=${jsonData[i].nama}&id_lokasi=${
+          jsonData[i].id_lokasi
+        }&shift=${JSON.stringify([])}`;
         const response = await fetch(url, { method: "POST" });
         if (!response.ok) {
           error("Gagal Menyimpan!");
@@ -446,6 +446,11 @@ const Karyawan: React.FC = () => {
   });
 
   const columns: ColumnsType<DataType> = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
     {
       title: "Nama",
       dataIndex: "nama",

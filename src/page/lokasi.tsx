@@ -43,6 +43,11 @@ const Lokasi: React.FC = () => {
   const lokasiURL = "https://internal.gbssecurindo.co.id/lokasi";
   const columns: ColumnsType<DataType> = [
     {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
       title: "Lokasi",
       dataIndex: "nama_lokasi",
       key: "nama_lokasi",

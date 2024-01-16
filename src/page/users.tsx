@@ -39,6 +39,11 @@ const Users: React.FC = () => {
 
   const columns: ColumnsType<DataType> = [
     {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
       title: "Username",
       dataIndex: "username",
       key: "username",

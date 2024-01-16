@@ -41,6 +41,11 @@ const Lokasi: React.FC = () => {
   const shiftURL = "https://internal.gbssecurindo.co.id/shift";
   const columns: ColumnsType<DataType> = [
     {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
       title: "Shift",
       dataIndex: "shift",
       key: "shift",
