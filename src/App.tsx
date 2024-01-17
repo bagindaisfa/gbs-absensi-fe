@@ -3,6 +3,7 @@ import {
   DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import logo from "./favicon.png";
@@ -13,6 +14,7 @@ import Download from "./page/download";
 import Users from "./page/users";
 import Shift from "./page/shift";
 import DownloadJadwal from "./page/downloadJadwal";
+import AbsenManual from "./page/absenManual";
 const { Header, Content, Footer, Sider } = Layout;
 
 interface MenuItem {
@@ -41,6 +43,7 @@ const items: MenuItem[] = [
     getItem("Absen", "6"),
     getItem("Jadwal", "7"),
   ]),
+  getItem("Absen Manual", "8", <EditOutlined />),
 ];
 
 const App: React.FC = () => {
@@ -69,6 +72,8 @@ const App: React.FC = () => {
     contentComponent = <Download />;
   } else if (selectedMenu.includes("sub2") && selectedMenu.includes("7")) {
     contentComponent = <DownloadJadwal />;
+  } else if (selectedMenu.includes("8")) {
+    contentComponent = <AbsenManual />;
   }
   const generateBreadcrumb = (selectedMenu: string[]) => {
     const breadcrumbItems: React.ReactNode[] = [];

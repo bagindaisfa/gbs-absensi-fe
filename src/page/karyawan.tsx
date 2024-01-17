@@ -578,9 +578,7 @@ const Karyawan: React.FC = () => {
                     <Form.Item
                       {...restField}
                       name={[name, "id"]}
-                      rules={[
-                        { required: true, message: "Missing Lokasi Kerja" },
-                      ]}
+                      rules={[{ required: true, message: "Missing Shift" }]}
                     >
                       <Select
                         placeholder="pilih shift"

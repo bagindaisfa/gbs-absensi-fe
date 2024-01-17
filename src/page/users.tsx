@@ -293,7 +293,7 @@ const Users: React.FC = () => {
           </Form.Item>
           <Form.Item label="Karyawan">
             <Select
-              placeholder="pilih lokasi karyawan"
+              placeholder="pilih karyawan"
               onChange={onChangeLokasi}
               allowClear
               value={idKaryawan}
