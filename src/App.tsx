@@ -15,6 +15,7 @@ import Users from "./page/users";
 import Shift from "./page/shift";
 import DownloadJadwal from "./page/downloadJadwal";
 import AbsenManual from "./page/absenManual";
+import Login from "./page/login";
 const { Header, Content, Footer, Sider } = Layout;
 
 interface MenuItem {
@@ -48,14 +49,21 @@ const items: MenuItem[] = [
 
 const App: React.FC = () => {
   const [selectedMenu, setSelectedMenu] = useState<string[]>(["1"]);
+  const [login, setLogin] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const currentYear = new Date().getFullYear();
+
   const handleMenuClick = ({ keyPath }: { keyPath: React.Key[] }) => {
     setSelectedMenu(keyPath as string[]);
     console.log(keyPath as string[]);
   };
+
+  const handleLogin = (valid: boolean) => {
+    setLogin(valid);
+  };
+
   let contentComponent: React.ReactNode = null;
 
   if (selectedMenu.includes("1")) {
@@ -98,65 +106,77 @@ const App: React.FC = () => {
     return breadcrumbItems;
   };
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        breakpoint="lg"
-        collapsedWidth="0"
-        onBreakpoint={(broken) => {
-          console.log(broken);
-        }}
-        onCollapse={(collapsed, type) => {
-          console.log(collapsed, type);
-        }}
-      >
-        <div className="demo-logo-vertical">
-          <img
-            src={logo}
-            alt="Logo"
-            style={{
-              width: 60,
-              marginTop: 20,
-              marginBottom: 20,
-              marginLeft: 65,
-            }}
-          />
-        </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-          onClick={handleMenuClick}
-        />
-      </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
-          <span
-            style={{ marginLeft: 20, fontWeight: "bold", fontSize: "x-large" }}
-          >
-            GBS Operasional
-          </span>
-        </Header>
-        <Content style={{ margin: "24px 16px 0" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            {generateBreadcrumb(selectedMenu)}
-          </Breadcrumb>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            {contentComponent}
-          </div>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          GBS Attendance ©{currentYear} Created by Baginda Isfa
-        </Footer>
-      </Layout>
-    </Layout>
+    <div>
+      {login ? (
+        <>
+          <Layout style={{ minHeight: "100vh" }}>
+            <Sider
+              breakpoint="lg"
+              collapsedWidth="0"
+              onBreakpoint={(broken) => {
+                console.log(broken);
+              }}
+              onCollapse={(collapsed, type) => {
+                console.log(collapsed, type);
+              }}
+            >
+              <div className="demo-logo-vertical">
+                <img
+                  src={logo}
+                  alt="Logo"
+                  style={{
+                    width: 60,
+                    marginTop: 20,
+                    marginBottom: 20,
+                    marginLeft: 65,
+                  }}
+                />
+              </div>
+              <Menu
+                theme="dark"
+                defaultSelectedKeys={["1"]}
+                mode="inline"
+                items={items}
+                onClick={handleMenuClick}
+              />
+            </Sider>
+            <Layout>
+              <Header style={{ padding: 0, background: colorBgContainer }}>
+                <span
+                  style={{
+                    marginLeft: 20,
+                    fontWeight: "bold",
+                    fontSize: "x-large",
+                  }}
+                >
+                  GBS Operasional
+                </span>
+              </Header>
+              <Content style={{ margin: "24px 16px 0" }}>
+                <Breadcrumb style={{ margin: "16px 0" }}>
+                  {generateBreadcrumb(selectedMenu)}
+                </Breadcrumb>
+                <div
+                  style={{
+                    padding: 24,
+                    minHeight: 360,
+                    background: colorBgContainer,
+                    borderRadius: borderRadiusLG,
+                  }}
+                >
+                  {contentComponent}
+                </div>
+              </Content>
+              <Footer style={{ textAlign: "center" }}>
+                GBS Attendance ©{currentYear} Created by Baginda Isfa
+              </Footer>
+            </Layout>
+          </Layout>
+        </>
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
+    </div>
   );
 };
 
