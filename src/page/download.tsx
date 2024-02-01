@@ -77,7 +77,10 @@ const Download: React.FC = () => {
           if (existingItem) {
             if (item.status === "Hadir") {
               existingItem.jam_masuk = item.timestamp;
-              if (existingItem.status === "Pulang") {
+              if (
+                existingItem.status === "Pulang" &&
+                existingItem.keterangan != "Backup"
+              ) {
                 existingItem.keterangan =
                   ket + " dan " + existingItem.keterangan;
               } else {
@@ -85,7 +88,10 @@ const Download: React.FC = () => {
               }
             } else if (item.status === "Pulang") {
               existingItem.jam_keluar = item.timestamp;
-              if (existingItem.status === "Hadir") {
+              if (
+                existingItem.status === "Hadir" &&
+                existingItem.keterangan != "Backup"
+              ) {
                 existingItem.keterangan += " dan " + ket;
               } else {
                 existingItem.keterangan = ket;
@@ -101,7 +107,6 @@ const Download: React.FC = () => {
               shift: item.shift,
               hari: item.day_name,
               tanggal: item.tanggal_range,
-              submit_absen: item.timestamp,
               status: item.status,
               keterangan: ket,
             };
