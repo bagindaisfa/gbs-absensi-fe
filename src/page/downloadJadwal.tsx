@@ -21,8 +21,8 @@ const DownloadJadwal: React.FC = () => {
   const [absensiList, setAbsensiList] = useState([]);
   const [lokasiList, setLokasiList] = useState([]);
   const [loadingDownload, setLoadingDownload] = useState(false);
-  const absensiURL = "https://internal.gbssecurindo.co.id/downloadjadwal";
-  const lokasiURL = "https://internal.gbssecurindo.co.id/masterlokasi";
+  const absensiURL = "http://195.35.36.220:3001/downloadjadwal";
+  const lokasiURL = "http://195.35.36.220:3001/masterlokasi";
   const dateFormat = "YYYY-MM-DD";
 
   const getLokasi = async () => {

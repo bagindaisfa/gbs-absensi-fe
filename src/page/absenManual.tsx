@@ -17,9 +17,9 @@ const { Option } = Select;
 const AbsenManual: React.FC = () => {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
-  const karyawanURL = "https://internal.gbssecurindo.co.id/karyawanList";
-  const shiftURL = "https://internal.gbssecurindo.co.id/shiftoption";
-  const lokasiURL = "https://internal.gbssecurindo.co.id/masterLokasi";
+  const karyawanURL = "http://195.35.36.220:3001/karyawanList";
+  const shiftURL = "http://195.35.36.220:3001/shiftoption";
+  const lokasiURL = "http://195.35.36.220:3001/masterLokasi";
   const dateFormat = "YYYY-MM-DD";
   const [karyawanList, setKaryawanList] = useState([]);
   const [shiftList, setShiftList] = useState([]);
@@ -178,7 +178,7 @@ const AbsenManual: React.FC = () => {
     }
 
     try {
-      const url = "https://internal.gbssecurindo.co.id/absensimanual";
+      const url = "http://195.35.36.220:3001/absensimanual";
       const response = await fetch(url, {
         method: "POST",
         body: formData,

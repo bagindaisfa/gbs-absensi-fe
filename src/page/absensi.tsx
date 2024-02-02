@@ -45,8 +45,8 @@ const Absensi: React.FC = () => {
   const [startDate, setStartDate] = useState(formattedDate);
   const [endDate, setEndDate] = useState(formattedDate);
   const [loadingTable, setLoadingTable] = useState(false);
-  const absensiURL = "https://internal.gbssecurindo.co.id/absensi";
-  const lokasiURL = "https://internal.gbssecurindo.co.id/masterLokasi";
+  const absensiURL = "http://195.35.36.220:3001/absensi";
+  const lokasiURL = "http://195.35.36.220:3001/masterLokasi";
   const [absensiList, setAbsensiList] = useState([]);
   const [lokasiOption, setLokasiOption] = useState([]);
   const [searchText, setSearchText] = useState("");

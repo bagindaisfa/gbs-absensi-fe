@@ -55,11 +55,11 @@ const Karyawan: React.FC = () => {
   const [shiftDeletedData, setShiftDeletedData] = useState<Array<any>>([]);
   const [edit, setEdit] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
-  const karyawanURL = "https://internal.gbssecurindo.co.id/karyawanList";
-  const karyawanSubmitURL = "https://internal.gbssecurindo.co.id/karyawan";
-  const shiftKaryawanURL = "https://internal.gbssecurindo.co.id/shiftkaryawan";
-  const lokasiURL = "https://internal.gbssecurindo.co.id/masterLokasi";
-  const shiftURL = "https://internal.gbssecurindo.co.id/shiftoption";
+  const karyawanURL = "http://195.35.36.220:3001/karyawanList";
+  const karyawanSubmitURL = "http://195.35.36.220:3001/karyawan";
+  const shiftKaryawanURL = "http://195.35.36.220:3001/shiftkaryawan";
+  const lokasiURL = "http://195.35.36.220:3001/masterLokasi";
+  const shiftURL = "http://195.35.36.220:3001/shiftoption";
 
   const getKaryawan = async () => {
     setLoadingTable(true);

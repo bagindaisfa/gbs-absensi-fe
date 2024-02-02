@@ -34,8 +34,8 @@ const Users: React.FC = () => {
   const [karyawanList, setKaryawanList] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [loadingTable, setLoadingTable] = useState(false);
-  const karyawanURL = "https://internal.gbssecurindo.co.id/karyawanList";
-  const usersURL = "https://internal.gbssecurindo.co.id/users";
+  const karyawanURL = "http://195.35.36.220:3001/karyawanList";
+  const usersURL = "http://195.35.36.220:3001/users";
 
   const columns: ColumnsType<DataType> = [
     {
@@ -153,7 +153,7 @@ const Users: React.FC = () => {
   const handleOk = async () => {
     try {
       if (edit) {
-        const url = `https://internal.gbssecurindo.co.id/users?id=${idUser}&username=${username}&password=${password}&id_karyawan=${idKaryawan}`;
+        const url = `http://195.35.36.220:3001/users?id=${idUser}&username=${username}&password=${password}&id_karyawan=${idKaryawan}`;
         const response = await fetch(url, { method: "PUT" });
 
         if (!response.ok) {
@@ -167,7 +167,7 @@ const Users: React.FC = () => {
           reset();
         }
       } else {
-        const url = `https://internal.gbssecurindo.co.id/users?username=${username}&password=${password}&id_karyawan=${idKaryawan}`;
+        const url = `http://195.35.36.220:3001/users?username=${username}&password=${password}&id_karyawan=${idKaryawan}`;
         const response = await fetch(url, { method: "POST" });
 
         if (!response.ok) {
@@ -207,7 +207,7 @@ const Users: React.FC = () => {
       console.log(jsonData); // Log the parsed data
 
       for (let i = 0; i < jsonData.length; i++) {
-        const url = `https://internal.gbssecurindo.co.id/users?username=${jsonData[i].username}&password=${jsonData[i].password}&id_karyawan=${jsonData[i].id_karyawan}`;
+        const url = `http://195.35.36.220:3001/users?username=${jsonData[i].username}&password=${jsonData[i].password}&id_karyawan=${jsonData[i].id_karyawan}`;
         const response = await fetch(url, { method: "POST" });
 
         if (!response.ok) {

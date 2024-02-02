@@ -40,7 +40,7 @@ const Lokasi: React.FC = () => {
   const [long, setLong] = useState("");
   const [edit, setEdit] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
-  const lokasiURL = "https://internal.gbssecurindo.co.id/lokasi";
+  const lokasiURL = "http://195.35.36.220:3001/lokasi";
   const columns: ColumnsType<DataType> = [
     {
       title: "ID",

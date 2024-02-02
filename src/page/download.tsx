@@ -23,8 +23,8 @@ const Download: React.FC = () => {
   const [summaryList, setSummaryList] = useState([]);
   const [lokasiList, setLokasiList] = useState([]);
   const [loadingDownload, setLoadingDownload] = useState(false);
-  const absensiURL = "https://internal.gbssecurindo.co.id/absensibylokasi";
-  const lokasiURL = "https://internal.gbssecurindo.co.id/masterlokasi";
+  const absensiURL = "http://195.35.36.220:3001/absensibylokasi";
+  const lokasiURL = "http://195.35.36.220:3001/masterlokasi";
 
   const getLokasi = async () => {
     try {
