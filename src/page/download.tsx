@@ -185,80 +185,9 @@ const Download: React.FC = () => {
   }, []);
 
   const exportToExcel = async (data: any[], filename: string) => {
-    const header = [
-      "id_karyawan",
-      "foto_datang",
-      "foto_pulang",
-      "lokasi",
-      "nama_karyawan",
-      "shift",
-      "hari",
-      "tanggal",
-      "status",
-      "keterangan_kedatangan",
-      "keterangan_pulang",
-      "keterangan_lain",
-      "jam_masuk",
-      "jam_keluar",
-      "lampiran",
-      "alasan",
-    ];
-
+    const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet([header]);
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-    await Promise.all(
-      data.map(async (item, rowIndex) => {
-        // Add other properties to the row
-        XLSX.utils.sheet_add_aoa(
-          worksheet,
-          [
-            [
-              item.id_karyawan,
-              item.foto_datang,
-              item.foto_pulang,
-              item.lokasi,
-              item.nama_karyawan,
-              item.shift,
-              item.hari,
-              item.tanggal,
-              item.status,
-              item.keterangan_kedatangan,
-              item.keterangan_pulang,
-              item.keterangan_lain,
-              item.jam_masuk,
-              item.jam_keluar,
-              item.lampiran,
-              item.alasan,
-            ],
-          ],
-          { origin: rowIndex + 1 }
-        );
-
-        // Add images to the worksheet
-        const fotoDatangBlob = await fetchImageBlob(item.foto_datang);
-        const fotoPulangBlob = await fetchImageBlob(item.foto_pulang);
-        const fotoLampiranBlob = await fetchImageBlob(item.lampiran);
-
-        const fotoDatangBase64 = await convertBlobToBase64(fotoDatangBlob);
-        const fotoPulangBase64 = await convertBlobToBase64(fotoPulangBlob);
-        const fotoLampiranBase64 = await convertBlobToBase64(fotoLampiranBlob);
-
-        worksheet[`B${rowIndex + 2}`] = {
-          t: "s",
-          v: <img src={fotoDatangBase64} style={{ width: 100 }} />,
-        };
-        worksheet[`C${rowIndex + 2}`] = {
-          t: "s",
-          v: <img src={fotoPulangBase64} style={{ width: 100 }} />,
-        };
-        worksheet[`O${rowIndex + 2}`] = {
-          t: "s",
-          v: <img src={fotoLampiranBase64} style={{ width: 100 }} />,
-        };
-      })
-    );
 
     // Convert workbook to a binary string and create a Blob
     const excelBuffer = XLSX.write(workbook, {
@@ -278,24 +207,6 @@ const Download: React.FC = () => {
     // Cleanup
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
-  };
-
-  const fetchImageBlob = async (blobData: any): Promise<Blob> => {
-    const byteArray = new Uint8Array(blobData?.data); // Convert Buffer to Uint8Array
-    const blob = new Blob([byteArray], { type: "image/jpeg" });
-
-    return blob;
-  };
-
-  const convertBlobToBase64 = async (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(reader.result as string);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
   };
 
   const error = () => {
