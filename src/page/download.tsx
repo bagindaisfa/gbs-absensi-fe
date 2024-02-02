@@ -1,15 +1,28 @@
 import React, { useState } from "react";
-import { Button, DatePicker, Form, message, Select } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  message,
+  Select,
+  notification,
+  NotificationArgsProps,
+} from "antd";
 import * as XLSX from "xlsx";
+import * as ExcelJS from "exceljs";
 import dayjs from "dayjs";
+import { saveAs } from "file-saver";
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+type NotificationType = "success" | "info";
+type NotificationPlacement = NotificationArgsProps["placement"];
 
 const Download: React.FC = () => {
   const [form] = Form.useForm();
   const currentDate = new Date();
   const [messageApi, contextHolder] = message.useMessage();
+  const [api, contextHolderNotif] = notification.useNotification();
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Adding 1 as months are zero-based
   const day = String(currentDate.getDate()).padStart(2, "0");
@@ -24,7 +37,21 @@ const Download: React.FC = () => {
   const [lokasiList, setLokasiList] = useState([]);
   const [loadingDownload, setLoadingDownload] = useState(false);
   const absensiURL = "http://195.35.36.220:3001/absensibylokasi";
+  const absensiFotoURL = "http://195.35.36.220:3001/absensiFotobylokasi";
   const lokasiURL = "http://195.35.36.220:3001/masterlokasi";
+
+  const openNotificationWithIcon = (
+    placement: NotificationPlacement,
+    type: NotificationType,
+    msg: string,
+    desc: string
+  ) => {
+    api[type]({
+      message: msg,
+      description: desc,
+      placement,
+    });
+  };
 
   const getLokasi = async () => {
     try {
@@ -88,14 +115,47 @@ const Download: React.FC = () => {
             // Create a new object with the modified values
             return {
               ...item,
+              foto_datang: item.id_datang
+                ? `http://195.35.36.220:3001/downloads/photo_${item.id_datang}.jpeg`
+                : "",
+              foto_pulang: item.id_pulang
+                ? `http://195.35.36.220:3001/downloads/photo_${item.id_pulang}.jpeg`
+                : "",
               jam_masuk: formattedDate,
               jam_keluar: formattedDate1,
             };
           });
 
           setAbsensiList(formattedAbsensiList);
+
           await getSummary(formattedAbsensiList);
         }
+      } catch (error) {
+        setLoadingDownload(false);
+        console.log("Error fetching data:", error);
+      }
+    }
+  };
+
+  const getAbsensiFoto = async () => {
+    if (idLokasi > 0) {
+      setLoadingDownload(true);
+      try {
+        const response = await fetch(
+          absensiFotoURL +
+            "?start_date=" +
+            startDate +
+            "&end_date=" +
+            endDate +
+            "&id_lokasi=" +
+            idLokasi
+        ); // Replace with your API endpoint
+
+        if (!response.ok) {
+          setLoadingDownload(false);
+          throw new Error("Network response was not ok.");
+        }
+        setLoadingDownload(false);
       } catch (error) {
         setLoadingDownload(false);
         console.log("Error fetching data:", error);
@@ -159,7 +219,7 @@ const Download: React.FC = () => {
       return acc;
     }, []);
     setSummaryList(summary);
-    setLoadingDownload(false);
+    await getAbsensiFoto();
   };
 
   const onChangeLokasi = (value: number) => {
@@ -207,6 +267,120 @@ const Download: React.FC = () => {
     // Cleanup
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+    openNotificationWithIcon(
+      "bottomRight",
+      "success",
+      "Download",
+      `${filename}.xlsx berhasil di-download`
+    );
+  };
+
+  const createExcelWithImage = () => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Sheet1");
+    sheet.columns = [
+      { header: "ID Karyawan", key: "id_karyawan", width: 10 },
+      { header: "Foto Datang", key: "foto_datang", width: 30 },
+      { header: "Foto Pulang", key: "foto_pulang", width: 30 },
+      { header: "Lokasi", key: "lokasi", width: 32 },
+      { header: "Nama", key: "nama_karyawan", width: 35 },
+      { header: "Shift", key: "shift", width: 10 },
+      { header: "Hari", key: "hari", width: 20 },
+      { header: "Tanggal", key: "tanggal", width: 20 },
+      { header: "Status", key: "status", width: 10 },
+      { header: "Datang", key: "keterangan_kedatangan", width: 35 },
+      { header: "Pulang", key: "keterangan_pulang", width: 35 },
+      { header: "Keterangan", key: "keterangan_lain", width: 35 },
+      { header: "Jam Masuk", key: "jam_masuk", width: 20 },
+      { header: "Jam Keluar", key: "jam_keluar", width: 20 },
+      { header: "Lampiran", key: "lampiran", width: 35 },
+      { header: "Alasan", key: "alasan", width: 35 },
+    ];
+
+    if (absensiList.length > 0) {
+      const fetchImagePromises = absensiList.map(
+        async (item: any, index: number) => {
+          sheet.getRow(index + 1).height = 100;
+          sheet.addRow({
+            id_karyawan: item.id_karyawan,
+            lokasi: item.lokasi,
+            nama_karyawan: item.nama_karyawan,
+            shift: item.shift,
+            hari: item.hari,
+            tanggal: item.tanggal,
+            status: item.status,
+            keterangan_kedatangan: item.keterangan_kedatangan,
+            keterangan_pulang: item.keterangan_pulang,
+            keterangan_lain: item.keterangan_lain,
+            jam_masuk: item.jam_masuk,
+            jam_keluar: item.jam_keluar,
+            lampiran: item.lampiran,
+            alasan: item.alasan,
+          });
+          // Fetch image data as array buffer
+          const fetchData = async (url: string) => {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch image: ${response.statusText}`);
+            }
+            return response.arrayBuffer();
+          };
+
+          // Fetch and add the image for foto_datang
+          try {
+            const imageDataDatang = await fetchData(item.foto_datang);
+            const imageIdDatang = workbook.addImage({
+              buffer: imageDataDatang,
+              extension: "jpeg",
+            });
+
+            sheet.addImage(imageIdDatang, {
+              tl: { col: 1, row: index + 1 },
+              ext: { width: 100, height: 150 },
+            });
+          } catch (error) {
+            console.error("Error fetching or adding image:", error);
+          }
+
+          // Fetch and add the image for foto_pulang
+          try {
+            const imageDataPulang = await fetchData(item.foto_pulang);
+            const imageIdPulang = workbook.addImage({
+              buffer: imageDataPulang,
+              extension: "jpeg",
+            });
+
+            sheet.addImage(imageIdPulang, {
+              tl: { col: 2, row: index + 1 },
+              ext: { width: 100, height: 150 },
+            });
+          } catch (error) {
+            console.error("Error fetching or adding image:", error);
+          }
+        }
+      );
+
+      Promise.all(fetchImagePromises)
+        .then(() => {
+          // Save the workbook
+          return workbook.xlsx.writeBuffer();
+        })
+        .then((buffer) => {
+          const blob = new Blob([buffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          saveAs(blob, `absensi_${namaLokasi}_${startDate} - ${endDate}.xlsx`);
+          openNotificationWithIcon(
+            "bottomRight",
+            "success",
+            "Download",
+            `absensi_${namaLokasi}_${startDate} - ${endDate}.xlsx berhasil di-download`
+          );
+        })
+        .catch((error) => {
+          console.error("Error creating workbook buffer:", error);
+        });
+    }
   };
 
   const error = () => {
@@ -218,10 +392,13 @@ const Download: React.FC = () => {
 
   const handleExportClick = () => {
     if (idLokasi != 0) {
-      exportToExcel(
-        absensiList,
-        "absensi_" + namaLokasi + "_" + startDate + " - " + endDate
+      openNotificationWithIcon(
+        "bottomRight",
+        "info",
+        "Download",
+        "Sedang diproses!"
       );
+      createExcelWithImage();
       exportToExcel(
         summaryList,
         "summary_" + namaLokasi + "_" + startDate + " - " + endDate
@@ -234,6 +411,7 @@ const Download: React.FC = () => {
   return (
     <>
       {contextHolder}
+      {contextHolderNotif}
       <Form layout="vertical" form={form} style={{ maxWidth: 600 }}>
         <Form.Item label="Pilih Rentang Waktu">
           <RangePicker
