@@ -43,92 +43,63 @@ const Download: React.FC = () => {
   };
 
   const getAbsensi = async () => {
-    setLoadingDownload(true);
-    try {
-      const response = await fetch(
-        absensiURL +
-          "?start_date=" +
-          startDate +
-          "&end_date=" +
-          endDate +
-          "&id_lokasi=" +
-          idLokasi
-      ); // Replace with your API endpoint
-      if (!response.ok) {
-        setLoadingDownload(false);
-        throw new Error("Network response was not ok.");
-      }
+    if (idLokasi > 0) {
+      setLoadingDownload(true);
+      try {
+        const response = await fetch(
+          absensiURL +
+            "?start_date=" +
+            startDate +
+            "&end_date=" +
+            endDate +
+            "&id_lokasi=" +
+            idLokasi
+        ); // Replace with your API endpoint
+        if (!response.ok) {
+          setLoadingDownload(false);
+          throw new Error("Network response was not ok.");
+        }
 
-      const result = await response.json();
-      if (result) {
-        const groupedData = result.absensi.reduce((acc: any, item: any) => {
-          const existingItem = acc.find(
-            (el: any) =>
-              el.nama_karyawan === item.nama &&
-              el.hari === item.day_name &&
-              el.tanggal === item.tanggal_range
-          );
+        const result = await response.json();
+        if (result) {
+          const formattedAbsensiList = result.absensi.map((item: any) => {
+            const originalDate = new Date(item.jam_masuk);
+            const originalDate1 = new Date(item.jam_keluar);
 
-          const ket =
-            item.alasan && item.alasan !== ""
-              ? item.keterangan + ", " + item.alasan
-              : item.keterangan;
+            const formattedDate = `${originalDate.getFullYear()}-${padZero(
+              originalDate.getMonth() + 1
+            )}-${padZero(originalDate.getDate())} ${padZero(
+              originalDate.getHours()
+            )}:${padZero(originalDate.getMinutes())}:${padZero(
+              originalDate.getSeconds()
+            )}`;
+            const formattedDate1 = `${originalDate1.getFullYear()}-${padZero(
+              originalDate1.getMonth() + 1
+            )}-${padZero(originalDate1.getDate())} ${padZero(
+              originalDate1.getHours()
+            )}:${padZero(originalDate1.getMinutes())}:${padZero(
+              originalDate1.getSeconds()
+            )}`;
 
-          if (existingItem) {
-            if (item.status === "Hadir") {
-              existingItem.jam_masuk = item.timestamp;
-              if (
-                existingItem.status === "Pulang" &&
-                existingItem.keterangan != "Backup"
-              ) {
-                existingItem.keterangan =
-                  ket + " dan " + existingItem.keterangan;
-              } else {
-                existingItem.keterangan = ket;
-              }
-            } else if (item.status === "Pulang") {
-              existingItem.jam_keluar = item.timestamp;
-              if (
-                existingItem.status === "Hadir" &&
-                existingItem.keterangan != "Backup"
-              ) {
-                existingItem.keterangan += " dan " + ket;
-              } else {
-                existingItem.keterangan = ket;
-              }
-            } else {
-              existingItem.jam_masuk = item.timestamp; // For other statuses
-              existingItem.keterangan = ket;
+            function padZero(num: any) {
+              return num.toString().padStart(2, "0");
             }
-          } else {
-            const newItem: any = {
-              lokasi: item.lokasi,
-              nama_karyawan: item.nama,
-              shift: item.shift,
-              hari: item.day_name,
-              tanggal: item.tanggal_range,
-              status: item.status,
-              keterangan: ket,
+
+            // Create a new object with the modified values
+            return {
+              ...item,
+              jam_masuk: formattedDate,
+              jam_keluar: formattedDate1,
             };
-            if (item.status === "Hadir") {
-              newItem.jam_masuk = item.timestamp;
-            } else if (item.status === "Pulang") {
-              newItem.jam_keluar = item.timestamp;
-            } else {
-              newItem.jam_masuk = item.timestamp; // For other statuses
-            }
-            acc.push(newItem);
-          }
+          });
 
-          return acc;
-        }, []);
-
-        setAbsensiList(groupedData);
-        await getSummary(groupedData);
+          setAbsensiList(formattedAbsensiList);
+          await getSummary(formattedAbsensiList);
+        }
+      } catch (error) {
+        setLoadingDownload(false);
+        console.log("Error fetching data:", error);
       }
-    } catch (error) {
-      setLoadingDownload(false);
-      console.log("Error fetching data:", error);
     }
   };
 
@@ -145,23 +116,28 @@ const Download: React.FC = () => {
           case "Hadir":
             existingItem.hadir++;
             break;
-          case "Izin":
-            existingItem.izin++;
-            break;
-          case "Sakit":
-            existingItem.sakit++;
-            break;
           default:
             break;
         }
 
         // Counting different keterangan values
-        switch (item.keterangan) {
+        switch (item.keterangan_kedatangan) {
           case "Tanpa Keterangan":
             existingItem.tk++;
             break;
-          case "Backup":
+          case "Datang Backup":
             existingItem.backup++;
+            break;
+          default:
+            break;
+        }
+
+        switch (item.keterangan_lain) {
+          case "Izin":
+            existingItem.izin++;
+            break;
+          case "Sakit":
+            existingItem.sakit++;
             break;
           default:
             break;
@@ -208,10 +184,81 @@ const Download: React.FC = () => {
     getLokasi();
   }, []);
 
-  const exportToExcel = (data: any[], filename: string) => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
+  const exportToExcel = async (data: any[], filename: string) => {
+    const header = [
+      "id_karyawan",
+      "foto_datang",
+      "foto_pulang",
+      "lokasi",
+      "nama_karyawan",
+      "shift",
+      "hari",
+      "tanggal",
+      "status",
+      "keterangan_kedatangan",
+      "keterangan_pulang",
+      "keterangan_lain",
+      "jam_masuk",
+      "jam_keluar",
+      "lampiran",
+      "alasan",
+    ];
+
     const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([header]);
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    await Promise.all(
+      data.map(async (item, rowIndex) => {
+        // Add other properties to the row
+        XLSX.utils.sheet_add_aoa(
+          worksheet,
+          [
+            [
+              item.id_karyawan,
+              item.foto_datang,
+              item.foto_pulang,
+              item.lokasi,
+              item.nama_karyawan,
+              item.shift,
+              item.hari,
+              item.tanggal,
+              item.status,
+              item.keterangan_kedatangan,
+              item.keterangan_pulang,
+              item.keterangan_lain,
+              item.jam_masuk,
+              item.jam_keluar,
+              item.lampiran,
+              item.alasan,
+            ],
+          ],
+          { origin: rowIndex + 1 }
+        );
+
+        // Add images to the worksheet
+        const fotoDatangBlob = await fetchImageBlob(item.foto_datang);
+        const fotoPulangBlob = await fetchImageBlob(item.foto_pulang);
+        const fotoLampiranBlob = await fetchImageBlob(item.lampiran);
+
+        const fotoDatangBase64 = await convertBlobToBase64(fotoDatangBlob);
+        const fotoPulangBase64 = await convertBlobToBase64(fotoPulangBlob);
+        const fotoLampiranBase64 = await convertBlobToBase64(fotoLampiranBlob);
+
+        worksheet[`B${rowIndex + 2}`] = {
+          t: "s",
+          v: <img src={fotoDatangBase64} style={{ width: 100 }} />,
+        };
+        worksheet[`C${rowIndex + 2}`] = {
+          t: "s",
+          v: <img src={fotoPulangBase64} style={{ width: 100 }} />,
+        };
+        worksheet[`O${rowIndex + 2}`] = {
+          t: "s",
+          v: <img src={fotoLampiranBase64} style={{ width: 100 }} />,
+        };
+      })
+    );
 
     // Convert workbook to a binary string and create a Blob
     const excelBuffer = XLSX.write(workbook, {
@@ -231,6 +278,24 @@ const Download: React.FC = () => {
     // Cleanup
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
+  };
+
+  const fetchImageBlob = async (blobData: any): Promise<Blob> => {
+    const byteArray = new Uint8Array(blobData?.data); // Convert Buffer to Uint8Array
+    const blob = new Blob([byteArray], { type: "image/jpeg" });
+
+    return blob;
+  };
+
+  const convertBlobToBase64 = async (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   };
 
   const error = () => {
