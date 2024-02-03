@@ -245,6 +245,7 @@ const Download: React.FC = () => {
   }, []);
 
   const exportToExcel = async (data: any[], filename: string) => {
+    setLoadingDownload(true);
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
@@ -376,6 +377,7 @@ const Download: React.FC = () => {
             "Download",
             `absensi_${namaLokasi}_${startDate} - ${endDate}.xlsx berhasil di-download`
           );
+          setLoadingDownload(false);
         })
         .catch((error) => {
           console.error("Error creating workbook buffer:", error);
