@@ -129,9 +129,9 @@ const Download: React.FC = () => {
               foto_pulang: item.id_pulang
                 ? `http://195.35.36.220:3001/downloads/photo_${item.id_pulang}.jpeg`
                 : "",
-              jam_masuk: formattedDate,
-              jam_keluar: formattedDate1,
-              tanggal: formattedDate2,
+              jam_masuk: item.jam_masuk ? formattedDate : "",
+              jam_keluar: item.jam_keluar ? formattedDate1 : "",
+              tanggal: item.tanggal ? formattedDate2 : "",
             };
           });
 
@@ -190,11 +190,9 @@ const Download: React.FC = () => {
         }
 
         // Counting different keterangan values
-        switch (item.keterangan_kedatangan) {
-          case "Tanpa Keterangan":
-            existingItem.tk++;
-            break;
-          case "Datang Backup":
+
+        switch (item.shift) {
+          case "Backup":
             existingItem.backup++;
             break;
           default:
@@ -202,6 +200,9 @@ const Download: React.FC = () => {
         }
 
         switch (item.keterangan_lain) {
+          case "Tanpa Keterangan":
+            existingItem.tk++;
+            break;
           case "Izin":
             existingItem.izin++;
             break;
@@ -217,8 +218,12 @@ const Download: React.FC = () => {
           hadir: item.status === "Hadir" ? 1 : 0,
           izin: item.status === "Izin" ? 1 : 0,
           sakit: item.status === "Sakit" ? 1 : 0,
-          tk: item.keterangan === "Tanpa Keterangan" ? 1 : 0,
-          backup: item.keterangan === "Backup" ? 1 : 0,
+          tk:
+            item.keterangan_kedatangan === "Tanpa Keterangan" &&
+            item.keterangan_pulang === "Tanpa Keterangan"
+              ? 1
+              : 0,
+          backup: item.shift === "Backup" ? 1 : 0,
           nama_karyawan: item.nama_karyawan,
           lokasi: item.lokasi,
         };
