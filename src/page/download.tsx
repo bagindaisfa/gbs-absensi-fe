@@ -92,6 +92,7 @@ const Download: React.FC = () => {
           const formattedAbsensiList = result.absensi.map((item: any) => {
             const originalDate = new Date(item.jam_masuk);
             const originalDate1 = new Date(item.jam_keluar);
+            const originalDate2 = new Date(item.tanggal);
 
             const formattedDate = `${originalDate.getFullYear()}-${padZero(
               originalDate.getMonth() + 1
@@ -106,6 +107,13 @@ const Download: React.FC = () => {
               originalDate1.getHours()
             )}:${padZero(originalDate1.getMinutes())}:${padZero(
               originalDate1.getSeconds()
+            )}`;
+            const formattedDate2 = `${originalDate2.getFullYear()}-${padZero(
+              originalDate2.getMonth() + 1
+            )}-${padZero(originalDate2.getDate())} ${padZero(
+              originalDate2.getHours()
+            )}:${padZero(originalDate2.getMinutes())}:${padZero(
+              originalDate2.getSeconds()
             )}`;
 
             function padZero(num: any) {
@@ -123,6 +131,7 @@ const Download: React.FC = () => {
                 : "",
               jam_masuk: formattedDate,
               jam_keluar: formattedDate1,
+              tanggal: formattedDate2,
             };
           });
 
