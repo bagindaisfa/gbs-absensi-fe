@@ -94,27 +94,18 @@ const Download: React.FC = () => {
             const originalDate1 = new Date(item.jam_keluar);
             const originalDate2 = new Date(item.tanggal);
 
-            const formattedDate = `${originalDate.getFullYear()}-${padZero(
-              originalDate.getMonth() + 1
-            )}-${padZero(originalDate.getDate())} ${padZero(
-              originalDate.getHours()
-            )}:${padZero(originalDate.getMinutes())}:${padZero(
-              originalDate.getSeconds()
-            )}`;
-            const formattedDate1 = `${originalDate1.getFullYear()}-${padZero(
-              originalDate1.getMonth() + 1
-            )}-${padZero(originalDate1.getDate())} ${padZero(
-              originalDate1.getHours()
-            )}:${padZero(originalDate1.getMinutes())}:${padZero(
-              originalDate1.getSeconds()
-            )}`;
+            const formattedDate = originalDate
+              .toISOString()
+              .replace("T", " ")
+              .replace(/\.\d+Z$/, "");
+            const formattedDate1 = originalDate1
+              .toISOString()
+              .replace("T", " ")
+              .replace(/\.\d+Z$/, "");
+
             const formattedDate2 = `${originalDate2.getFullYear()}-${padZero(
               originalDate2.getMonth() + 1
-            )}-${padZero(originalDate2.getDate())} ${padZero(
-              originalDate2.getHours()
-            )}:${padZero(originalDate2.getMinutes())}:${padZero(
-              originalDate2.getSeconds()
-            )}`;
+            )}-${padZero(originalDate2.getDate())}`;
 
             function padZero(num: any) {
               return num.toString().padStart(2, "0");
@@ -129,9 +120,13 @@ const Download: React.FC = () => {
               foto_pulang: item.id_pulang
                 ? `http://195.35.36.220:3001/downloads/photo_${item.id_pulang}.jpeg`
                 : "",
-              jam_masuk: item.jam_masuk ? formattedDate : "",
-              jam_keluar: item.jam_keluar ? formattedDate1 : "",
-              tanggal: item.tanggal ? formattedDate2 : "",
+              jam_masuk: item.jam_masuk
+                ? formattedDate
+                : item.keterangan_kedatangan,
+              jam_keluar: item.jam_keluar
+                ? formattedDate1
+                : item.keterangan_pulang,
+              tanggal: formattedDate2,
             };
           });
 
