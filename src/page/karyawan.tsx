@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState } from 'react';
 import {
   Button,
   Form,
@@ -11,18 +11,18 @@ import {
   Upload,
   Space,
   InputRef,
-} from "antd";
-import type { ColumnType, ColumnsType } from "antd/es/table";
+} from 'antd';
+import type { ColumnType, ColumnsType } from 'antd/es/table';
 import {
   MinusCircleOutlined,
   PlusOutlined,
   UploadOutlined,
-} from "@ant-design/icons";
-import { SearchOutlined } from "@ant-design/icons";
-import { FilterConfirmProps } from "antd/es/table/interface";
-import Highlighter from "react-highlight-words";
-import dayjs from "dayjs";
-import * as XLSX from "xlsx";
+} from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
+import { FilterConfirmProps } from 'antd/es/table/interface';
+import Highlighter from 'react-highlight-words';
+import dayjs from 'dayjs';
+import * as XLSX from 'xlsx';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -39,14 +39,14 @@ type DataIndex = keyof DataType;
 const Karyawan: React.FC = () => {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
-  const dateFormat = "YYYY-MM-DD";
-  const [searchText, setSearchText] = useState("");
+  const dateFormat = 'YYYY-MM-DD';
+  const [searchText, setSearchText] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const [searchedColumn, setSearchedColumn] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [idKaryawan, setIdKaryawan] = useState(0);
   const [idLokasi, setIdLokasi] = useState(0);
-  const [namaKaryawan, setNamaKaryawan] = useState("");
+  const [namaKaryawan, setNamaKaryawan] = useState('');
   const [karyawanList, setKaryawanList] = useState<any>([]);
   const [lokasiList, setLokasiList] = useState([]);
   const [shiftList, setShiftList] = useState([]);
@@ -55,11 +55,11 @@ const Karyawan: React.FC = () => {
   const [shiftDeletedData, setShiftDeletedData] = useState<Array<any>>([]);
   const [edit, setEdit] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
-  const karyawanURL = "http://195.35.36.220:3001/karyawanList";
-  const karyawanSubmitURL = "http://195.35.36.220:3001/karyawan";
-  const shiftKaryawanURL = "http://195.35.36.220:3001/shiftkaryawan";
-  const lokasiURL = "http://195.35.36.220:3001/masterLokasi";
-  const shiftURL = "http://195.35.36.220:3001/shiftoption";
+  const karyawanURL = 'http://195.35.36.220:3001/karyawanList';
+  const karyawanSubmitURL = 'http://195.35.36.220:3001/karyawan';
+  const shiftKaryawanURL = 'http://195.35.36.220:3001/shiftkaryawan';
+  const lokasiURL = 'http://195.35.36.220:3001/masterLokasi';
+  const shiftURL = 'http://195.35.36.220:3001/shiftoption';
 
   const getKaryawan = async () => {
     setLoadingTable(true);
@@ -67,7 +67,7 @@ const Karyawan: React.FC = () => {
       const response = await fetch(karyawanURL); // Replace with your API endpoint
       if (!response.ok) {
         setLoadingTable(false);
-        throw new Error("Network response was not ok.");
+        throw new Error('Network response was not ok.');
       }
 
       const result = await response.json();
@@ -77,7 +77,7 @@ const Karyawan: React.FC = () => {
       getLokasi();
     } catch (error) {
       setLoadingTable(false);
-      console.log("Error fetching data:", error);
+      console.log('Error fetching data:', error);
     }
   };
 
@@ -86,13 +86,13 @@ const Karyawan: React.FC = () => {
     try {
       const response = await fetch(
         shiftKaryawanURL +
-          "?id_lokasi=" +
+          '?id_lokasi=' +
           id_lokasi +
-          "&id_karyawan=" +
+          '&id_karyawan=' +
           id_karyawan
       ); // Replace with your API endpoint
       if (!response.ok) {
-        throw new Error("Network response was not ok.");
+        throw new Error('Network response was not ok.');
       }
 
       const result = await response.json();
@@ -111,7 +111,7 @@ const Karyawan: React.FC = () => {
       }
       getLokasi();
     } catch (error) {
-      console.log("Error fetching data:", error);
+      console.log('Error fetching data:', error);
       setLoadingEdit(false);
     }
   };
@@ -121,7 +121,7 @@ const Karyawan: React.FC = () => {
       const response = await fetch(lokasiURL); // Replace with your API endpoint
       if (!response.ok) {
         setLoadingTable(false);
-        throw new Error("Network response was not ok.");
+        throw new Error('Network response was not ok.');
       }
 
       const result = await response.json();
@@ -139,16 +139,16 @@ const Karyawan: React.FC = () => {
       }
     } catch (error) {
       setLoadingTable(false);
-      console.log("Error fetching data:", error);
+      console.log('Error fetching data:', error);
     }
   };
 
   const getShift = async () => {
     if (idLokasi != 0) {
       try {
-        const response = await fetch(shiftURL + "?id_lokasi=" + idLokasi); // Replace with your API endpoint
+        const response = await fetch(shiftURL + '?id_lokasi=' + idLokasi); // Replace with your API endpoint
         if (!response.ok) {
-          throw new Error("Network response was not ok.");
+          throw new Error('Network response was not ok.');
         }
 
         const result = await response.json();
@@ -156,21 +156,21 @@ const Karyawan: React.FC = () => {
           setShiftList(result.shift);
         }
       } catch (error) {
-        console.log("Error fetching data:", error);
+        console.log('Error fetching data:', error);
       }
     }
   };
 
   const success = () => {
     messageApi.open({
-      type: "success",
-      content: "Berhasil disimpan!",
+      type: 'success',
+      content: 'Berhasil disimpan!',
     });
   };
 
   const error = (message: string) => {
     messageApi.open({
-      type: "error",
+      type: 'error',
       content: message,
     });
   };
@@ -194,7 +194,7 @@ const Karyawan: React.FC = () => {
       const deletedItem = filteredData.map((item: any) => {
         return {
           ...item,
-          status: "deleted",
+          status: 'deleted',
         };
       });
 
@@ -222,56 +222,71 @@ const Karyawan: React.FC = () => {
               dateRange: item.dateRange.map((date: any) => {
                 return dayjs(date).format(dateFormat); // Extract date part in "YYYY-MM-DD" format
               }),
-              status: item.status ?? "new",
+              status: item.status ?? 'new',
             };
           }
         });
 
-        if (idLokasi != 0 && namaKaryawan !== "") {
+        if (idLokasi != 0 && namaKaryawan !== '') {
           try {
             if (edit) {
-              const url = `${karyawanSubmitURL}?id=${idKaryawan}&nama=${namaKaryawan}&id_lokasi=${idLokasi}&shift=${JSON.stringify(
-                [...formated_array, ...shiftDeletedData]
-              )}`;
-              const response = await fetch(url, { method: "PUT" });
-              if (!response.ok) {
-                error("Gagal Menyimpan!");
-                setEdit(false);
-                throw new Error("Network response was not ok.");
-              } else {
-                const data = await response.json();
-                console.log("Response:", data);
-                success();
-                reset();
+              const url = `${karyawanSubmitURL}`;
+              const body = {
+                id: idKaryawan,
+                nama: namaKaryawan,
+                id_lokasi: idLokasi,
+                shift: [...formated_array, ...shiftDeletedData],
+              };
+              try {
+                const response = await fetch(url, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(body),
+                });
+
+                if (!response.ok) {
+                  error('Gagal Menyimpan!');
+                  setEdit(false);
+                  throw new Error('Network response was not ok.');
+                } else {
+                  const data = await response.json();
+                  console.log('Response:', data);
+                  success();
+                  reset();
+                }
+              } catch (err) {
+                console.error(err);
               }
             } else {
               const url = `${karyawanSubmitURL}?nama=${namaKaryawan}&id_lokasi=${idLokasi}&shift=${JSON.stringify(
                 formated_array
               )}`;
-              const response = await fetch(url, { method: "POST" });
+              const response = await fetch(url, { method: 'POST' });
               if (!response.ok) {
-                error("Gagal Menyimpan!");
+                error('Gagal Menyimpan!');
                 setEdit(false);
-                throw new Error("Network response was not ok.");
+                throw new Error('Network response was not ok.');
               } else {
                 const data = await response.json();
-                console.log("Response:", data);
+                console.log('Response:', data);
                 success();
                 reset();
               }
             }
           } catch (err) {
-            console.error("Error:", err);
+            console.error('Error:', err);
             setIsModalOpen(false);
-            error("Gagal Menyimpan!");
+            error('Gagal Menyimpan!');
             setEdit(false);
           }
         } else {
-          error("Isi Nama Karyawan dan pilih Lokasi!");
+          error('Isi Nama Karyawan dan pilih Lokasi!');
         }
       })
       .catch((errorInfo) => {
-        console.error("Validation failed:", errorInfo);
+        console.error('Validation failed:', errorInfo);
       });
   };
 
@@ -279,7 +294,7 @@ const Karyawan: React.FC = () => {
     const reader = new FileReader();
     reader.onload = async (e: any) => {
       const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
+      const workbook = XLSX.read(data, { type: 'array' });
 
       // Assuming only one sheet in the Excel file
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -292,14 +307,14 @@ const Karyawan: React.FC = () => {
         const url = `${karyawanSubmitURL}?nama=${jsonData[i].nama}&id_lokasi=${
           jsonData[i].id_lokasi
         }&shift=${JSON.stringify([])}`;
-        const response = await fetch(url, { method: "POST" });
+        const response = await fetch(url, { method: 'POST' });
         if (!response.ok) {
-          error("Gagal Menyimpan!");
+          error('Gagal Menyimpan!');
           setEdit(false);
-          throw new Error("Network response was not ok.");
+          throw new Error('Network response was not ok.');
         } else {
           const data = await response.json();
-          console.log("Response:", data);
+          console.log('Response:', data);
           success();
         }
       }
@@ -310,13 +325,13 @@ const Karyawan: React.FC = () => {
   };
 
   const props = {
-    accept: ".xlsx",
+    accept: '.xlsx',
     beforeUpload: (file: any) => {
       const isXLSX =
         file.type ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
       if (!isXLSX) {
-        message.error("You can only upload XLSX files!");
+        message.error('You can only upload XLSX files!');
       } else {
         handleUpload(file);
       }
@@ -330,7 +345,7 @@ const Karyawan: React.FC = () => {
 
   const reset = () => {
     setIdLokasi(0);
-    setNamaKaryawan("");
+    setNamaKaryawan('');
     setIdLokasi(0);
     setShiftDeletedData([]);
     setShiftList([]);
@@ -351,7 +366,7 @@ const Karyawan: React.FC = () => {
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
-    setSearchText("");
+    setSearchText('');
   };
 
   const getColumnSearchProps = (
@@ -375,7 +390,7 @@ const Karyawan: React.FC = () => {
           onPressEnter={() =>
             handleSearch(selectedKeys as string[], confirm, dataIndex)
           }
-          style={{ marginBottom: 8, display: "block" }}
+          style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
           <Button
@@ -420,7 +435,7 @@ const Karyawan: React.FC = () => {
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -435,10 +450,10 @@ const Karyawan: React.FC = () => {
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ""}
+          textToHighlight={text ? text.toString() : ''}
         />
       ) : (
         text
@@ -447,28 +462,28 @@ const Karyawan: React.FC = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
-      title: "Nama",
-      dataIndex: "nama",
-      key: "nama",
-      ...getColumnSearchProps("nama"),
+      title: 'Nama',
+      dataIndex: 'nama',
+      key: 'nama',
+      ...getColumnSearchProps('nama'),
     },
     {
-      title: "Lokasi",
-      dataIndex: "nama_lokasi",
-      key: "nama_lokasi",
+      title: 'Lokasi',
+      dataIndex: 'nama_lokasi',
+      key: 'nama_lokasi',
       filters: lokasiOption,
-      filterMode: "tree",
+      filterMode: 'tree',
       filterSearch: true,
       onFilter: (val: any, record) => record.nama_lokasi.startsWith(val),
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <Button
           size="middle"
@@ -553,21 +568,21 @@ const Karyawan: React.FC = () => {
                 {fields.map(({ key, name, ...restField }) => (
                   <Space
                     key={key}
-                    style={{ display: "flex", marginBottom: 8 }}
+                    style={{ display: 'flex', marginBottom: 8 }}
                     align="baseline"
                   >
                     <Form.Item
                       {...restField}
-                      name={[name, "id_shift_karyawan"]}
+                      name={[name, 'id_shift_karyawan']}
                       hidden
                     >
                       <Input />
                     </Form.Item>
                     <Form.Item
                       {...restField}
-                      name={[name, "dateRange"]}
+                      name={[name, 'dateRange']}
                       rules={[
-                        { required: true, message: "Missing Date Range" },
+                        { required: true, message: 'Missing Date Range' },
                       ]}
                     >
                       <RangePicker
@@ -577,8 +592,8 @@ const Karyawan: React.FC = () => {
                     </Form.Item>
                     <Form.Item
                       {...restField}
-                      name={[name, "id"]}
-                      rules={[{ required: true, message: "Missing Shift" }]}
+                      name={[name, 'id']}
+                      rules={[{ required: true, message: 'Missing Shift' }]}
                     >
                       <Select
                         placeholder="pilih shift"
